@@ -85,11 +85,13 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\LocationController.cs" />
+    <Compile Include="Controllers\ObservationController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Counties.cs" />
     <Compile Include="Models\Image.cs" />
+    <Compile Include="Models\Observation.cs" />
     <Compile Include="Models\SpecificCount.cs" />
     <Compile Include="Models\LocationCount.cs" />
     <Compile Include="Models\Specie.cs" />

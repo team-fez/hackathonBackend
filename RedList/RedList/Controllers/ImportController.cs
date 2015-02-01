@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web.Http;
@@ -17,32 +18,35 @@ namespace RedList.Controllers
             using (var conn = new SqlConnection(@"Data Source=localhost\SQLEXPRESS;Initial Catalog=RedList;Integrated Security=SSPI;"))
             {
                 conn.Open();
-                var file = new StreamReader(@"C:\Users\Ruben\Downloads\wikiscrape.json");
-                var test = file.ReadToEnd();
-                var objects = Newtonsoft.Json.JsonConvert.DeserializeObject<List<wikiStuff>>(test);
+                var file = new StreamReader(@"C:\Users\Ruben\Desktop\DataExportFraArtskart1.txt");
+                //var test = file.ReadToEnd();
+                //var objects = Newtonsoft.Json.JsonConvert.DeserializeObject<List<wikiStuff>>(test);
 
-                foreach (var specie in objects)
-                {
+                //foreach (var specie in objects)
+                //{
                    
-                   var summary = specie.summary.Replace("'", "''");
-                    if (summary.Length > 3999)
-                    {
-                        summary =summary.Substring(0, 3999);
-                    }
-                    conn.Execute(string.Format("update species set Wikiurl='{1}', summary ='{2}' where id= {0}", specie.Id, specie.wikipediaUrl, summary));
-                }
+                //   var summary = specie.summary.Replace("'", "''");
+                //    if (summary.Length > 3999)
+                //    {
+                //        summary =summary.Substring(0, 3999);
+                //    }
+                //    conn.Execute(string.Format("update species set Wikiurl='{1}', summary ='{2}' where id= {0}", specie.Id, specie.wikipediaUrl, summary));
+                //}
                 while (!file.EndOfStream)
-                {
-
-                    
+                {  
                     var line = file.ReadLine();
-                   
 
-                   
+
+                    double longitude;
+                    double latidude;
                         
-                    var sl = line.Split('|');
-                  //  conn.Execute(
-                   //     String.Format("insert into Species (id,Name,NorwegianName,Category,SpeciesGroup) values({0},'{1}','{2}','{3}','{4}')",sl[0],sl[1],sl[3],sl[4],sl[6]));
+                    var sl = line.Replace("'","").Replace('"',' ').Split(';');
+                    if (sl.Length > 68 && double.TryParse(sl[38],out longitude) && Double.TryParse(sl[39], out latidude))
+                    {
+                        conn.Execute(
+                       String.Format("insert into Observation (Name,Longitude,Latitude,County) values('{0}','{1}','{2}','{3}')", sl[7], sl[38], sl[39], sl[35]));    
+                    }
+                    
                     //var zomg =
                     //    String.Format(
                     //        @"update Species set ostfold ='{0}', akershus = '{1}', oslo = '{1}', hedmark = '{2}', oppland = '{3}', buskerud = '{4}', vestfold= '{5}',telemark = '{6}',austagder='{7}',vestagder ='{8}',rogaland='{9}',hordaland='{10}',Sogn_og_Fjordane = '{11}', moreogromsdal='{12}',sortrondelag = '{13}', nordtrondelag = '{14}', nordland = '{15}',troms ='{16}', finnmark ='{17}'  where Name like '{18}'",
